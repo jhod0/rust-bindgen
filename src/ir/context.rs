@@ -908,6 +908,28 @@ If you encounter an error missing from this list, please file an issue or a PR!"
                 "yield" |
                 "bool" |
                 "_" => true,
+
+                "f32" |
+                "f64" |
+                "usize" |
+                "isize" |
+                "u128" |
+                "i128" |
+                "u64" |
+                "i64" |
+                "u32" |
+                "i32" |
+                "u16" |
+                "i16" |
+                "u8" |
+                "i8" => {
+                    if !self.options.allow_primitive_collisions {
+                        error!("Name \"{}\" conflicts with Rust builtin type name",
+                              name);
+                    }
+                    true
+                },
+
                 _ => false,
             }
         {

@@ -148,6 +148,10 @@ where
             Arg::with_name("distrust-clang-mangling")
                 .long("distrust-clang-mangling")
                 .help("Do not trust the libclang-provided mangling"),
+            Arg::with_name("allow-primitive-collisions")
+                .long("allow-primitive-collisions")
+                .help("Whether to allow items with the same names as Rust \
+                      primitive types."),
             Arg::with_name("builtins")
                 .long("builtins")
                 .help("Output bindings for builtin definitions, e.g. \
@@ -538,6 +542,10 @@ where
 
     if matches.is_present("distrust-clang-mangling") {
         builder = builder.trust_clang_mangling(false);
+    }
+
+    if matches.is_present("allow-primitive-collisions") {
+        builder = builder.allow_primitive_collisions(true);
     }
 
     if matches.is_present("conservative-inline-namespaces") {

@@ -747,6 +747,17 @@ impl Builder {
         self
     }
 
+    /// How to handle C/C++ types with the same name as Rust primitive types?
+    /// (e.g., `typedef int i32;`) If such collisions are allowed, bindgen
+    /// will prepend an underscore to such names in the generated bindings;
+    /// if they are not allowed, an error will be recorded.
+    ///
+    /// Addresses issue #1382.
+    pub fn allow_primitive_collisions(mut self, doit: bool) -> Self {
+        self.options.allow_primitive_collisions = doit;
+        self
+    }
+
     /// Hide the given type from the generated bindings. Regular expressions are
     /// supported.
     #[deprecated(note = "Use blacklist_type instead")]
@@ -1518,6 +1529,14 @@ struct BindgenOptions {
     /// [1]: https://github.com/rust-lang-nursery/rust-bindgen/issues/528
     enable_mangling: bool,
 
+    /// How to handle C/C++ types with the same name as Rust primitive types?
+    /// (e.g., `typedef int i32;`) By default, bindgen will report an error and
+    /// crash. If desired, however, we can instead append an underscore to the
+    /// name in the generated bindings.
+    ///
+    /// Addresses issue #1382.
+    allow_primitive_collisions: bool,
+
     /// Whether to prepend the enum name to bitfield or constant variants.
     prepend_enum_name: bool,
 
@@ -1532,7 +1551,6 @@ struct BindgenOptions {
 
     /// The absolute path to the rustfmt configuration file, if None, the standard rustfmt
     /// options are used.
-
     rustfmt_configuration_file: Option<PathBuf>,
 
     /// The set of types that we should not derive `PartialEq` for.
@@ -1639,6 +1657,7 @@ impl Default for BindgenOptions {
             objc_extern_crate: false,
             block_extern_crate: false,
             enable_mangling: true,
+            allow_primitive_collisions: false,
             prepend_enum_name: true,
             time_phases: false,
             rustfmt_bindings: true,
